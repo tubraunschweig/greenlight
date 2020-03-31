@@ -157,7 +157,7 @@ de_DE:
         no_users: Kein Teilnehmer gefunden
         role: Rolle
         uid: Teilnehmer ID
-        username: Teilnehmername
+        username: GITZ-Benutzerkennung
       title: Teilnehmer verwalten
   add_to_google_calendar: "Zum Google Kalender hinzufügen"
   bigbluebutton: BigBlueButton
@@ -222,7 +222,7 @@ de_DE:
       help: "Falls Sie glauben, dass hier ein Fehler vorliegt, kontaktieren Sie Ihren Systemadministrator."
   expired_reset_token: Passwordresetlink ist abgelaufen!
   features:
-    title: Eigenschaften
+    title: Funktionen
     rooms: Personalisierte Räume
     recordings: Aufzeichnungsmanagement
     designs: Eigene Designs
@@ -258,8 +258,9 @@ de_DE:
     search:
       start: Beginne die Suche...
   landing:
-    about: "%{href} ist ein einfacher Frontend für Ihren quelloffenen BigBlueButton Webkonferenzserver. Sie können ihre eigenen Räume erstellen, um Konferenzen abzuhalten oder Sie können bestehenden Konferenzen über einen praktischen Kurzlink beitreten."
-    welcome: Willkommen zu BigBlueButton.
+    # about: "%{href} ist ein einfacher Frontend für Ihren quelloffenen BigBlueButton Webkonferenzserver. Sie können ihre eigenen Räume erstellen, um Konferenzen abzuhalten oder Sie können bestehenden Konferenzen über einen praktischen Kurzlink beitreten."
+    about: "Webkonferenzserver der TU Braunschweig. Sie können ihre eigenen Räume erstellen, um Konferenzen abzuhalten oder Sie können bestehenden Konferenzen über einen praktischen Kurzlink beitreten."
+    welcome: Web Konferenz TU Braunschweig.
     video: Schauen Sie sich unsere Anleitung zur Verwendung von Greenlight an
     upgrade: "Zeigen Sie mir, wie ich auf Version 2.0. update!"
     version: "Wir haben eine neue Version von Greenlight veröffentlicht, aber Ihre Datenbank ist damit nicht kompatibel."

@@ -33,6 +33,13 @@
             <%= link_to current_user.main_room, class: "px-3 mx-1 mt-1 header-nav #{rooms_page}" do %>
               <i class="fas fa-home pr-1 "></i><span class="d-none d-sm-inline-block"><%= t("header.dropdown.home") %></span>
             <% end %>
+
+            <% if current_user.highest_priority_role.get_permission("can_create_rooms") %>
+              <% all_rec_page = params[:controller] == "users" && params[:action] == "recordings" ? "active" : "" %>
+              <%= link_to get_user_recordings_path(current_user), class: "px-3 mx-1 mt-1 header-nav #{all_rec_page}" do %>
+                <i class="fas fa-video pr-1"></i><span class="d-none d-sm-inline-block"><%= t("header.all_recordings") %></span>
+              <% end %>
+            <% end %>
           <% end %>
 
           <div class="dropdown">

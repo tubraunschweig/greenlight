@@ -20,7 +20,7 @@
       <div class="col-6">
         <%= f.label t("settings.account.fullname"), class: "form-label" %>
         <div class="input-icon">
-          <%= f.text_field :name, class: "form-control #{form_is_invalid?(@user, :name)}", placeholder: t("settings.account.fullname"), readonly: !@user.greenlight_account? %>
+          <%= f.text_field :name, class: "form-control #{form_is_invalid?(@user, :name)}", placeholder: t("settings.account.fullname") %>
         </div>
       </div>
 
@@ -31,6 +31,9 @@
         </div>
       </div>
     </div>
+    <br>
+    <%= f.label t("settings.account.provider"), class: "form-label" %>
+    <%= f.text_field :provider, class: "form-control", readonly: "" %>
     <br>
     <%= f.label t("settings.account.language"), class: "form-label" %>
     <%= f.select :language, language_options, {}, { class: "form-control custom-select" } %>

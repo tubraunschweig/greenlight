@@ -90,7 +90,11 @@
                     <td><%= user.provider %></td>
                     <td class="text-center">
                       <% roles = user.roles().pluck(:name) %>
-                      <%= render "admins/components/admins_role", role: user.highest_priority_role %>
+                      <% begin %>
+                        <%= render "admins/components/admins_role", role: user.highest_priority_role %>
+                      <% rescue %>
+                      <%= t("administrator.users.table.none") %>
+                      <% end %>
                     </td>
                     <td>
                       <% if !roles.include?("super_admin") %>

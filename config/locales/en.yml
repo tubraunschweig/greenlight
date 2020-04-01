@@ -154,6 +154,7 @@ en:
         created: Created
         name: Name
         not_found: No users match your search
+        none: none
         no_users: No users found
         role: Role
         uid: User ID

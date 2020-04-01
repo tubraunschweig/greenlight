@@ -154,6 +154,7 @@ de_DE:
         created: Erzeugt
         name: Name
         not_found: Keinen Teilnehmer für Ihre Suchkriterien gefunden
+        none: keine
         no_users: Kein Teilnehmer gefunden
         role: Rolle
         uid: Teilnehmer ID

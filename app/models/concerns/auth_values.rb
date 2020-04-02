@@ -67,13 +67,13 @@ module AuthValues
       end
     end
 
-    tokens = auth['uid'].split('=')
-    if tokens[1].match(/^y0/)
-      role = Role.find_by(provider: role_provider, name: "Student")
-      user.roles << role if !role.nil? && !user.has_role?("Student")
-    else
-      role = Role.find_by(provider: role_provider, name: "Mitarbeiter")
-      user.roles << role if !role.nil? && !user.has_role?("Mitarbeiter")
-    end
+    # tokens = auth['uid'].split('=')
+    # if tokens[1].match(/^y0/)
+    #   role = Role.find_by(provider: role_provider, name: "Student")
+    #   user.roles << role if !role.nil? && !user.has_role?("Student")
+    # else
+    #   role = Role.find_by(provider: role_provider, name: "Mitarbeiter")
+    #   user.roles << role if !role.nil? && !user.has_role?("Mitarbeiter")
+    # end
   end
 end

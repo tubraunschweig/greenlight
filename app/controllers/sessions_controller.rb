@@ -145,6 +145,18 @@ class SessionsController < ApplicationController
 
     @auth = parse_auth(result.first, ENV['LDAP_ROLE_FIELD'])
 
+    # allow multiple LDAP_ROLE_FIELD values, add remaining ones in addition to first.
+    # logger.info "auth: " + @auth.to_s
+    uid = @auth['info']['nickname']
+    role_field = ENV['LDAP_ROLE_FIELD']
+    result.each do |entry|
+      # logger.info "  role_field: " + entry[role_field].to_s
+      entry[role_field].each do |role|
+        @auth['info']['roles'] << "," + role
+      end
+    end
+    # logger.info "auth: " + @auth.to_s
+
     begin
       process_signin
     rescue => e

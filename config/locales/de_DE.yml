@@ -225,12 +225,13 @@ de_DE:
         time: Zeitpunkt
         name: Name
         not_found: Keinen Teilnehmer für Ihre Suchkriterien gefunden
+        none: keine
         no_users: Kein Teilnehmer gefunden
         role: Rolle
         uid: Teilnehmer ID
-        username: Teilnehmername
+        username: GITZ-Benutzerkennung
         valid: Gültig
-      title: Nutzer verwalten
+      title: Teilnehmer verwalten
   add_to_google_calendar: "Zum Google Kalender hinzufügen"
   bigbluebutton: BigBlueButton
   bigbluebutton_exception: "Ups, beim Start der Konferenz ist ein Fehler aufgetreten!"
@@ -296,7 +297,7 @@ de_DE:
       help: "Falls Sie glauben, dass hier ein Fehler vorliegt, kontaktieren Sie Ihren Systemadministrator."
   expired_reset_token: Der Link zum Zurücksetzen des Passworts ist abgelaufen!
   features:
-    title: Eigenschaften
+    title: Funktionen
     rooms: Personalisierte Räume
     recordings: Aufzeichnungsmanagement
     designs: Eigene Designs
@@ -321,7 +322,7 @@ de_DE:
       signout: Abmelden
   home_room: Startraum
   info_update_success: Information erfolgreich aktualisiert.
-  invalid_credentials: "Die eingegebene E-Mail und das Passwort sind nicht richtig. Bitte versuchen Sie es erneut oder wählen Sie die Option Ihr Passwort zurückzusetzen, falls Sie es vergessen haben."
+  invalid_credentials: Die eingegebene E-Mail und das Passwort sind nicht richtig. Bitte versuchen Sie es erneut.
   invalid_credentials_external: Die eingegebene E-Mail und das Passwort sind nicht richtig. Bitte versuchen Sie es erneut.
   invalid_login_method: Die Anmeldung scheiterte aufgrund einer Unstimmigkeit mit dem Konto. Sie müssen sich mit Omniauth anmelden.
   invite_message: "Um jemanden zur Konferenz einzuladen, schicken Sie ihm diesen Link:"
@@ -335,8 +336,8 @@ de_DE:
     search:
       start: Suche beginnen...
   landing:
-    about: "%{href} ist eine benutzerfreundliche Oberfläche für das Open-Source-Webkonferenzsystem BigBlueButton. Sie können Ihre eigenen Räume erstellen, um Konferenzen zu veranstalten oder können bestehenden Konferenzen über einen kurzen und bequemen Link beitreten."
-    welcome: Willkommen zu BigBlueButton.
+    about: "Webkonferenzserver der TU Braunschweig. Sie können ihre eigenen Räume erstellen, um Konferenzen abzuhalten oder Sie können bestehenden Konferenzen über einen praktischen Kurzlink beitreten."
+    welcome: Web Konferenz TU Braunschweig.
     video: Schauen Sie sich unsere Anleitung zur Verwendung von Greenlight an
     upgrade: "Zeigen Sie mir, wie ich auf Version 2.0. update!"
     version: "Wir haben eine neue Version von Greenlight veröffentlicht, aber Ihre Datenbank ist damit nicht kompatibel."

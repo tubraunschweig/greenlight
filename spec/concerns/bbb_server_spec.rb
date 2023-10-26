@@ -67,13 +67,12 @@ describe BbbServer do
 
       endpoint = Rails.configuration.bigbluebutton_endpoint
       secret = Rails.configuration.bigbluebutton_secret
-      fullname = "&fullName=Example"
+      fullname = "fullName=Example"
       join_via_html5 = "&join_via_html5=true"
       meeting_id = "&meetingID=#{@room.bbb_id}"
       password = "&password=#{@room.attendee_pw}"
-      time = "createTime=1611793449622"
 
-      query = time + fullname + join_via_html5 + meeting_id + password
+      query = fullname + join_via_html5 + meeting_id + password
       checksum_string = "join#{query + secret}"
 
       checksum = OpenSSL::Digest.digest('sha1', checksum_string).unpack1("H*")

@@ -123,6 +123,8 @@ Rails.application.routes.draw do
   # Extended room routes.
   scope '/:room_uid' do
     post '/', to: 'rooms#join'
+    get '/easy', to: 'rooms#join_tubs'
+    post '/easy', to: 'rooms#join'
     get '/room_settings', to: 'rooms#room_settings'
     post '/update_settings', to: 'rooms#update_settings'
     get '/current_presentation', to: 'rooms#current_presentation'

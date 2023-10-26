@@ -136,6 +136,32 @@ class RoomsController < ApplicationController
     join_room(default_meeting_options)
   end
 
+  # GET /:room_uid/easy
+  def join_tubs
+    return redirect_to root_path if !params[:join_name] && !current_user.present?
+    @join_name = params[:join_name] if params[:join_name]
+
+    @shared_room = room_shared_with_user
+
+    unless @room.owned_by?(current_user) || @shared_room
+      valid_access_code = !@room.access_code.present? || @room.access_code == params[:access_code]
+      if !valid_access_code && !valid_moderator_access_code(params[:access_code])
+        return redirect_to room_path(room_uid: params[:room_uid]), flash: { alert: I18n.t("room.access_code_required") }
+      end
+
+      if valid_access_code
+        session[:access_code] = params[:access_code]
+      elsif valid_moderator_access_code(params[:access_code])
+        session[:moderator_access_code] = params[:access_code]
+      end
+    end
+
+    save_recent_rooms
+
+    logger.info "Support: #{current_user.present? ? current_user.email : @join_name} is joining room #{@room.uid}"
+    join_room_tubs(default_meeting_options)
+  end
+
   # DELETE /:room_uid
   def destroy
     begin
@@ -180,7 +206,7 @@ class RoomsController < ApplicationController
     @room_settings = JSON.parse(@room[:room_settings])
     opts[:mute_on_start] = room_setting_with_config("muteOnStart")
     opts[:require_moderator_approval] = room_setting_with_config("requireModeratorApproval")
-    opts[:record] = record_meeting
+    opts[:record] = false
 
     begin
       redirect_to join_path(@room, current_user.name, opts, current_user.uid)
@@ -435,13 +461,7 @@ class RoomsController < ApplicationController
   helper_method :valid_moderator_access_code
 
   def record_meeting
-    # If the require consent setting is checked, then check the room setting, else, set to true
-    user = current_user || @room.owner
-    if recording_consent_required?
-      room_setting_with_config("recording") && user&.role&.get_permission("can_launch_recording")
-    else
-      user&.role&.get_permission("can_launch_recording")
-    end
+    false
   end
 
   # Checks if the file extension is allowed

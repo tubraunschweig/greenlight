@@ -88,6 +88,29 @@ module Joiner
     end
   end
 
+  def join_room_tubs(opts)
+    @room_settings = JSON.parse(@room[:room_settings])
+
+    moderator_privileges = @room.owned_by?(current_user) || valid_moderator_access_code(params[:access_code]) || @shared_room
+    if room_running?(@room.bbb_id) || room_setting_with_config("anyoneCanStart") || moderator_privileges
+
+      # Determine if the user needs to join as a moderator.
+      opts[:user_is_moderator] = room_setting_with_config("joinModerator") || moderator_privileges
+      opts[:record] = record_meeting
+      opts[:require_moderator_approval] = room_setting_with_config("requireModeratorApproval")
+      opts[:mute_on_start] = room_setting_with_config("muteOnStart")
+
+      if current_user
+        redirect_to join_path(@room, current_user.name, opts, current_user.uid)
+      else
+        join_name = params[:join_name]
+        redirect_to join_path(@room, join_name, opts, fetch_guest_id)
+      end
+    else
+      render :wait
+    end
+  end
+
   def incorrect_user_domain
     Rails.configuration.loadbalanced_configuration && @room.owner.provider != @user_domain
   end

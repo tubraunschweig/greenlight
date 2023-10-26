@@ -57,10 +57,9 @@ module AuthValues
   end
 
   def auth_roles(user, auth)
-    unless auth['info']['roles'].nil?
+    role_provider = auth['provider'] == "bn_launcher" ? auth['info']['customer'] : "greenlight"
+    if user.role.nil? && auth['info']['roles'].present?
       roles = auth['info']['roles'].split(',')
-
-      role_provider = auth['provider'] == "bn_launcher" ? auth['info']['customer'] : "greenlight"
       roles.each do |role_name|
         role = Role.find_by(provider: role_provider, name: role_name)
         user.set_role(role_name) if !role.nil? && !user.has_role?(role_name)

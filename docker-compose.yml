@@ -3,10 +3,10 @@ version: '3'
 services:
   app:
     entrypoint: [bin/start]
-    image: bigbluebutton/greenlight:v2
+    image: tubs-greenlight-v2:release-v2
     container_name: greenlight-v2
     env_file: .env
-    restart: unless-stopped
+    restart: always
     ports:
       - 127.0.0.1:5000:80
 # When using external logging
@@ -25,7 +25,7 @@ services:
       - db
   db:
     image: postgres:13-alpine
-    restart: unless-stopped
+    restart: always
     ports:
       - 127.0.0.1:5432:5432
     volumes:

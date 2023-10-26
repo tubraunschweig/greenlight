@@ -158,6 +158,8 @@ flash: { alert: I18n.t("registration.insecure_password") } unless User.secure_pa
 
     @auth = parse_auth(result.first, ENV['LDAP_ROLE_FIELD'], ENV['LDAP_ATTRIBUTE_MAPPING'])
 
+    add_ldap_role(result)
+
     begin
       process_signin
     rescue => e
@@ -167,6 +169,27 @@ flash: { alert: I18n.t("registration.insecure_password") } unless User.secure_pa
   end
 
   private
+
+  def add_ldap_role(result)
+    role_field = ENV['LDAP_ROLE_FIELD']
+    employee = false
+    student = false
+    member = false
+    result.each do |entry|
+      entry[role_field].each do |role|
+        employee = true if role.to_s == "employee"
+        student = true if role.to_s == "student"
+        member = true if role.to_s == "member"
+      end
+    end
+    if employee
+      @auth['info']['roles'] << "," << "employee"
+    elsif student
+      @auth['info']['roles'] << "," << "student"
+    elsif member
+      @auth['info']['roles'] << "," << "member"
+    end
+  end
 
   # Verify that GreenLight is configured to allow user signup.
   def check_user_signup_allowed

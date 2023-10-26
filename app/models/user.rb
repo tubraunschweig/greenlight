@@ -69,7 +69,7 @@ class User < ApplicationRecord
       find_or_initialize_by(social_uid: auth['uid'], provider: provider).tap do |u|
         u.name = auth_name(auth) unless u.name
         u.username = auth_username(auth) unless u.username
-        u.email = auth_email(auth)
+        # u.email = auth_email(auth)
         u.image = auth_image(auth) unless u.image
         auth_roles(u, auth)
         u.email_verified = true

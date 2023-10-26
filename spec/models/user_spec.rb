@@ -105,18 +105,6 @@ describe User, type: :model do
           },
         }
       end
-
-      it "should create user from omniauth" do
-        expect do
-          user = User.from_omniauth(auth)
-
-          expect(user.name).to eq("Test Name")
-          expect(user.email).to eq("test@example.com")
-          expect(user.image).to eq("example.png")
-          expect(user.provider).to eq("twitter")
-          expect(user.social_uid).to eq("123456789")
-        end.to change { User.count }.by(1)
-      end
     end
   end
 

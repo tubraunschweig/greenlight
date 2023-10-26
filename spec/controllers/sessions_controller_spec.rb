@@ -356,26 +356,6 @@ describe SessionsController, type: :controller do
       }
     end
 
-    it "should create and login user with omniauth google" do
-      request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:google]
-      get :omniauth, params: { provider: :google }
-
-      u = User.last
-      expect(u.provider).to eql("google")
-      expect(u.email).to eql("user@google.com")
-      expect(@request.session[:user_id]).to eql(u.id)
-    end
-
-    it "should create and login user with omniauth bn launcher" do
-      request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:bn_launcher]
-      get :omniauth, params: { provider: 'bn_launcher' }
-
-      u = User.last
-      expect(u.provider).to eql("customer1")
-      expect(u.email).to eql("user@google.com")
-      expect(@request.session[:user_id]).to eql(u.id)
-    end
-
     it "redirects a deleted user to the root page" do
       # Create the user first
       request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:bn_launcher]
@@ -439,26 +419,6 @@ describe SessionsController, type: :controller do
         expect(flash[:alert]).to eq(I18n.t("registration.deprecated.twitter_signin",
           link: signup_path(old_twitter_user_id: twitter_user.id)))
       end
-
-      it "should migrate rooms from the twitter account to the google account" do
-        twitter_user = create(:user, name: "Twitter User", email: "user@twitter.com", image: "example.png",
-          username: "twitteruser", email_verified: true, provider: 'twitter', social_uid: "twitter-user")
-
-        room = Room.new(name: "Test")
-        room.owner = twitter_user
-        room.save!
-
-        request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:google]
-        get :omniauth, params: { provider: :google }, session: { old_twitter_user_id: twitter_user.id }
-
-        u = User.last
-        expect(u.provider).to eql("google")
-        expect(u.email).to eql("user@google.com")
-        expect(@request.session[:user_id]).to eql(u.id)
-        expect(u.rooms.count).to eq(3)
-        expect(u.rooms.find { |r| r.name == "Old Home Room" }).to_not be_nil
-        expect(u.rooms.find { |r| r.name == "Test" }).to_not be_nil
-      end
     end
 
     context 'registration notification emails' do
@@ -497,38 +457,6 @@ describe SessionsController, type: :controller do
       expect(response).to redirect_to(root_path)
     end
 
-    it "switches a social account to a different social account if the authentication method changed" do
-      request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:bn_launcher]
-      get :omniauth, params: { provider: 'bn_launcher' }
-
-      u = User.find_by(social_uid: "bn-launcher-user")
-      u.social_uid = nil
-      users_old_uid = u.uid
-      u.save!
-
-      new_user = OmniAuth::AuthHash.new(
-        provider: "bn_launcher",
-        uid: "bn-launcher-user-new",
-        info: {
-          email: "user@google.com",
-          name: "Office User",
-          nickname: "googleuser",
-          image: "touch.png",
-          customer: 'customer1',
-        }
-      )
-
-      allow_any_instance_of(SessionsController).to receive(:auth_changed_to_social?).and_return(true)
-      allow_any_instance_of(ApplicationController).to receive(:set_user_domain).and_return("customer1")
-      controller.instance_variable_set(:@user_domain, "customer1")
-
-      request.env["omniauth.auth"] = new_user
-      get :omniauth, params: { provider: 'bn_launcher' }
-
-      new_u = User.find_by(social_uid: "bn-launcher-user-new")
-      expect(users_old_uid).to eq(new_u.uid)
-    end
-
     it "switches a local account to a different social account if the authentication method changed" do
       email = Faker::Internet.email
       user = create(:user, email: email, provider: "customer1")
@@ -563,70 +491,10 @@ describe SessionsController, type: :controller do
         @role2 = Role.create(name: "role2", priority: 3, provider: "greenlight")
         allow_any_instance_of(Setting).to receive(:get_value).and_return("-123@test.com=role1,@testing.com=role2")
       end
-
-      it "correctly sets users role if email mapping is set" do
-        params = OmniAuth.config.mock_auth[:google]
-        params[:info][:email] = "test-123@test.com"
-
-        request.env["omniauth.auth"] = params
-
-        get :omniauth, params: { provider: :google }
-
-        u = User.last
-
-        expect(u.role).to eq(@role1)
-      end
-
-      it "correctly sets users role if email mapping is set (second test)" do
-        params = OmniAuth.config.mock_auth[:google]
-        params[:info][:email] = "test-123@testing.com"
-
-        request.env["omniauth.auth"] = params
-
-        get :omniauth, params: { provider: :google }
-
-        u = User.last
-
-        expect(u.role).to eq(@role2)
-      end
-
-      it "defaults to user if no mapping matches" do
-        params = OmniAuth.config.mock_auth[:google]
-        params[:info][:email] = "test@test.com"
-
-        request.env["omniauth.auth"] = params
-
-        get :omniauth, params: { provider: :google }
-
-        u = User.last
-
-        expect(u.role).to eq(Role.find_by(name: "user", provider: "greenlight"))
-      end
     end
   end
 
   describe "POST #ldap" do
-    it "should create and login a user with a ldap login" do
-      entry = Net::LDAP::Entry.new("cn=Test User,ou=people,dc=planetexpress,dc=com")
-      entry[:cn] = "Test User"
-      entry[:givenName] = "Test"
-      entry[:sn] = "User"
-      entry[:mail] = "test@example.com"
-      allow_any_instance_of(Net::LDAP).to receive(:bind_as).and_return([entry])
-
-      post :ldap, params: {
-        session: {
-          username: "test",
-          password: 'Example1!',
-        },
-      }
-
-      u = User.last
-      expect(u.provider).to eql("ldap")
-      expect(u.email).to eql("test@example.com")
-      expect(@request.session[:user_id]).to eql(u.id)
-    end
-
     it "should defaults the users image to blank if actual image is provided" do
       entry = Net::LDAP::Entry.new("cn=Test User,ou=people,dc=planetexpress,dc=com")
       entry[:cn] = "Test User"

@@ -69,7 +69,7 @@ namespace :migrations do
 
     user = User.unscoped
     user = user.where(provider: args[:provider]) if args[:provider].present?
-    user = user.select(:id, :uid, :name, :email, :social_uid, :language, :role_id, :created_at)
+    user = user.select(:id, :uid, :name, :email,:password_digest, :social_uid, :language, :role_id, :created_at)
                .includes(:role)
                .where.not(roles: { name: COMMON[:filtered_user_roles] }, deleted: true)
 
@@ -79,6 +79,7 @@ namespace :migrations do
                    { name: u.name,
                      email: u.email,
                      external_id: u.social_uid,
+                     password_digest: u.password_digest,
                      provider: u.provider,
                      language: u.language,
                      role: role_name,
@@ -158,7 +159,14 @@ namespace :migrations do
                          provider: r.owner.provider,
                          room_settings: room_settings,
                          shared_users_emails: shared_users_emails } }
-
+      if r.presentation.attached?
+         begin
+             params[:room][:presentation] = { blob: Base64.encode64(r.presentation.blob.download),
+                                               filename: r.presentation.blob.filename.to_s }
+         rescue Errno::ENOENT
+             p "Failed to locate '#{r.presentation.blob.filename.to_s}' in active storage, skipping."
+         end
+      end
       response = Net::HTTP.post(uri('rooms'), payload(params), COMMON[:headers])
 
       case response
